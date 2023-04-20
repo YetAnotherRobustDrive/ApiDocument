@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.ErrorDto;
+import com.example.demo.ResisterDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -8,10 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -53,14 +51,7 @@ public class AuthController {
         return ResponseEntity.ok().body(null);
     }
 
-    @Getter
-    private static class ResisterDto {
-        private String name;
-        private String id;
-        private String password;
-    }
-
-    @Operation(summary = "회원 탈퇴", description = "가입되어있는 회원을 탈퇴합니다.")
+    @Operation(summary = "회원 탈퇴", description = "특권사용자가 회원을 탈퇴합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "삭제 성공", content = @Content),
             @ApiResponse(responseCode = "401", description = "로그인 안되어 있음", content = @Content(schema = @Schema(implementation = ErrorDto.class)))
@@ -78,4 +69,18 @@ public class AuthController {
     public ResponseEntity<?> logout() {
         return ResponseEntity.ok().body("OK");
     }
+
+
+    @Operation(summary = "유저의 권한을 특권유저로 바꿉니다.", description = "특권 유저는 자신의 정보에 대해 좀 더 많은 권한을 가지고 있습니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "특권 유저가 사용할 수 있는 토큰을 리턴",
+                content = @Content(schema = @Schema(implementation = JwtToken.class))),
+            @ApiResponse(responseCode = "403", description = "패스워드가 잘못되었습니다.",
+                content = @Content(schema = @Schema(implementation = ErrorDto.class)))
+    })
+    @PostMapping("/elevate")
+    public ResponseEntity<?> elevate(@RequestParam String passwordDto) {
+        return ResponseEntity.ok().body("OK");
+    }
+
 }

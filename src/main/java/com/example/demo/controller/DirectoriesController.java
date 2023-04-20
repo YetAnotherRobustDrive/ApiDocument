@@ -55,11 +55,6 @@ public class DirectoriesController {
         private boolean isShared;
     }
 
-    @Getter
-    public static class ChangeDirectoryDto {
-        private String name;
-    }
-
     @Operation(summary = "디렉토리 정보 조회", description = "특정 디렉토리의 자세한 정보를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "특정 디렉토리 정보 조회 성공",
@@ -106,7 +101,7 @@ public class DirectoriesController {
             @ApiResponse(responseCode = "403", description = "디렉토리 이름이 중복됨", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
             @ApiResponse(responseCode = "404", description = "특정 디렉토리를 찾을 수 없음", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
     @PostMapping("/{directoryId}/create")
-    public ResponseEntity<?> create(@PathVariable String directoryId, ChangeDirectoryDto changeDirectoryDto) {
+    public ResponseEntity<?> create(@PathVariable String directoryId, @RequestParam String fileName) {
         return ResponseEntity.ok().body("OK");
     }
 
@@ -134,7 +129,7 @@ public class DirectoriesController {
             @ApiResponse(responseCode = "403", description = "디렉토리 이름이 중복됨", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
             @ApiResponse(responseCode = "404", description = "특정 디렉토리를 찾을 수 없음", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
     @PostMapping("/{directoryId}/restore")
-    public ResponseEntity<?> rename(@PathVariable String directoryId, ChangeDirectoryDto changeDirectoryDto) {
+    public ResponseEntity<?> rename(@PathVariable String directoryId, @RequestParam String name) {
         return ResponseEntity.ok().body("OK");
     }
 
@@ -144,7 +139,7 @@ public class DirectoriesController {
             @ApiResponse(responseCode = "403", description = "디렉토리 이름이 중복됨", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
             @ApiResponse(responseCode = "404", description = "특정 디렉토리를 찾을 수 없음", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
     @PostMapping("/{directoryId}/move")
-    public ResponseEntity<?> move(@PathVariable String directoryId, ChangeDirectoryDto changeDirectoryDto) {
+    public ResponseEntity<?> move(@PathVariable String directoryId, @RequestParam Long targetDirectoryId) {
         return ResponseEntity.ok().body("OK");
     }
 
@@ -152,7 +147,7 @@ public class DirectoriesController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "디렉토리 삭제 성공", content = @Content),
             @ApiResponse(responseCode = "404", description = "특정 디렉토리를 찾을 수 없음", content = @Content(schema = @Schema(implementation = ErrorDto.class)))})
-    @PostMapping("/{directoryId}/purge")
+    @RequestMapping(value = "/{directoryId}/purge", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity<?> purge(@PathVariable String directoryId) {
         return ResponseEntity.ok().body("OK");
     }
